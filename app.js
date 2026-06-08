@@ -109,6 +109,109 @@ const statusTone = {
   unknown: "unknown"
 };
 
+const adminModules = {
+  students: {
+    label: "จัดการนักเรียน",
+    icon: "users",
+    subtitle: "เพิ่ม/แก้ไข/ลบนักเรียน นำเข้า CSV และผูกห้องเรียน",
+    fields: [
+      { key: "id", label: "รหัสนักเรียน", type: "text", required: true },
+      { key: "name", label: "ชื่อ-สกุล", type: "text", required: true },
+      { key: "nickname", label: "ชื่อเล่น", type: "text" },
+      { key: "classId", label: "ชั้น/ห้อง", type: "class" },
+      { key: "number", label: "เลขที่", type: "number" },
+      { key: "guardian", label: "ผู้ปกครอง", type: "text" },
+      { key: "qr", label: "QR Code", type: "text" },
+      { key: "status", label: "สถานะ", type: "select", options: [["active", "กำลังศึกษา"], ["watch", "เฝ้าระวัง"], ["inactive", "พักการเรียน"]] }
+    ],
+    columns: ["id", "name", "nickname", "classId", "number", "status"]
+  },
+  teachers: {
+    label: "จัดการครู",
+    icon: "user-check",
+    subtitle: "เพิ่มรายชื่อครู เบอร์โทร รหัสครู และบทบาทการสอน",
+    fields: [
+      { key: "id", label: "รหัสระบบ", type: "text", required: true },
+      { key: "code", label: "รหัสครู", type: "text", required: true },
+      { key: "name", label: "ชื่อ-สกุล", type: "text", required: true },
+      { key: "role", label: "กลุ่มสาระ/หน้าที่", type: "text" },
+      { key: "phone", label: "เบอร์โทร", type: "text" },
+      { key: "email", label: "อีเมล", type: "text" },
+      { key: "permission", label: "สิทธิ์", type: "role" }
+    ],
+    columns: ["code", "name", "role", "phone", "permission"]
+  },
+  subjects: {
+    label: "จัดการรายวิชา",
+    icon: "database",
+    subtitle: "ตั้งรหัสวิชา สี หน่วยกิต คาบต่อสัปดาห์ ชั้น และห้อง",
+    fields: [
+      { key: "id", label: "รหัสระบบ", type: "text", required: true },
+      { key: "code", label: "รหัสวิชา", type: "text", required: true },
+      { key: "name", label: "ชื่อวิชา", type: "text", required: true },
+      { key: "credit", label: "หน่วยกิต", type: "number" },
+      { key: "hours", label: "คาบ/สัปดาห์", type: "number" },
+      { key: "level", label: "ชั้น", type: "text" },
+      { key: "room", label: "ห้อง", type: "text" },
+      { key: "color", label: "สี", type: "color" }
+    ],
+    columns: ["color", "code", "name", "credit", "hours", "level", "room"]
+  },
+  classrooms: {
+    label: "จัดการห้องเรียน",
+    icon: "door-open",
+    subtitle: "กำหนดชั้น ห้อง และครูที่ปรึกษา",
+    fields: [
+      { key: "id", label: "รหัสห้อง", type: "text", required: true },
+      { key: "level", label: "ชั้น", type: "text" },
+      { key: "room", label: "ห้อง", type: "text" },
+      { key: "name", label: "ชื่อห้อง", type: "text", required: true },
+      { key: "advisorId", label: "ครูที่ปรึกษา", type: "teacher" }
+    ],
+    columns: ["id", "name", "level", "room", "advisorId"]
+  },
+  timetables: {
+    label: "ตารางสอนครู",
+    icon: "calendar-days",
+    subtitle: "จัดตารางสอนของครูทุกคน แยกห้อง วิชา คาบ และห้องเรียน",
+    fields: [
+      { key: "id", label: "รหัสตาราง", type: "text", required: true },
+      { key: "day", label: "วัน", type: "select", options: [["จันทร์", "จันทร์"], ["อังคาร", "อังคาร"], ["พุธ", "พุธ"], ["พฤหัสบดี", "พฤหัสบดี"], ["ศุกร์", "ศุกร์"]] },
+      { key: "classId", label: "ชั้น/ห้อง", type: "class" },
+      { key: "periodNo", label: "คาบ", type: "period" },
+      { key: "subjectId", label: "รายวิชา", type: "subject" },
+      { key: "teacherId", label: "ครูผู้สอน", type: "teacher" },
+      { key: "roomName", label: "ห้องเรียน", type: "text" }
+    ],
+    columns: ["day", "teacherId", "classId", "periodNo", "subjectId", "roomName"]
+  },
+  periods: {
+    label: "ตั้งค่าคาบเรียน",
+    icon: "clock",
+    subtitle: "กำหนดเวลาเริ่ม-จบคาบ เพื่อใช้ตัดสินมาเรียน สาย และขาด",
+    fields: [
+      { key: "no", label: "คาบ", type: "number", required: true },
+      { key: "label", label: "ชื่อคาบ", type: "text", required: true },
+      { key: "start", label: "เวลาเริ่ม", type: "time" },
+      { key: "end", label: "เวลาจบ", type: "time" },
+      { key: "autoAbsent", label: "ขาดอัตโนมัติ", type: "select", options: [["yes", "เปิด"], ["no", "ปิด"]] }
+    ],
+    columns: ["no", "label", "start", "end", "autoAbsent"]
+  },
+  roles: {
+    label: "สิทธิ์ผู้ใช้งาน",
+    icon: "shield-check",
+    subtitle: "กำหนดบทบาทและสิทธิ์ของผู้ใช้งานในระบบ",
+    fields: [
+      { key: "id", label: "รหัสสิทธิ์", type: "text", required: true },
+      { key: "name", label: "ชื่อสิทธิ์", type: "text", required: true },
+      { key: "scope", label: "ขอบเขต", type: "text" },
+      { key: "canManage", label: "จัดการข้อมูล", type: "select", options: [["yes", "ได้"], ["limited", "จำกัดสิทธิ์"], ["no", "ไม่ได้"]] }
+    ],
+    columns: ["id", "name", "scope", "canManage"]
+  }
+};
+
 const icons = {
   "alert-triangle": '<svg class="icon" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>',
   "bar-chart-3": '<svg class="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>',
@@ -161,8 +264,10 @@ function bindElements() {
     "viewTitle", "dashboardSummary", "riskList", "roomStats", "alertFeed",
     "autoRulesBtn", "openAttendanceBtn", "scanMode", "scanTime", "scanInput",
     "scanDemoBtn", "processScanBtn", "scanResult", "guardTime", "guardDevice",
-    "guardGps", "managementContent", "periodSettings", "permissionMatrix",
-    "schemaList"
+    "guardGps", "adminModuleTabs", "adminSearch", "adminSummary", "adminTable",
+    "adminForm", "adminTableTitle", "adminTableSubtitle", "adminFormTitle",
+    "adminSampleBtn", "adminImportBtn", "adminAddBtn", "periodSettings",
+    "permissionMatrix", "schemaList"
   ].forEach((id) => {
     ui[id] = document.getElementById(id);
   });
@@ -197,7 +302,7 @@ function setDefaultInputs() {
   ui.studentSearch.value = "650302";
   ui.gateSearch.value = "660105";
   ui.scanInput.value = "QR:650302";
-  ui.roleSelect.value = "discipline";
+  ui.roleSelect.value = "admin";
   state.selectedStudentId = state.selectedStudentId || "650302";
 }
 
@@ -227,12 +332,18 @@ function bindEvents() {
     render();
   });
   ui.processScanBtn.addEventListener("click", processScan);
-  document.querySelectorAll("[data-action='mock-save']").forEach((button) => {
-    button.addEventListener("click", () => {
-      addAlert("system", "บันทึกข้อมูลตัวอย่าง", "หน้าจัดการข้อมูลเป็นต้นแบบสำหรับเชื่อมฐานข้อมูลจริง");
-      saveState();
-      render();
-    });
+  ui.adminSearch.addEventListener("input", () => {
+    state.adminQuery = ui.adminSearch.value;
+    saveState();
+    renderManagement();
+    replaceIcons(document.getElementById("managementView"));
+  });
+  ui.adminAddBtn.addEventListener("click", () => startAdminCreate());
+  ui.adminSampleBtn.addEventListener("click", exportAdminSampleCsv);
+  ui.adminImportBtn.addEventListener("click", () => {
+    addAlert("system", "นำเข้า CSV", "ต้นแบบนี้เตรียมปุ่มนำเข้าไว้แล้ว เมื่อต่อ backend จะอ่านไฟล์ CSV และบันทึกฐานข้อมูลจริง");
+    saveState();
+    render();
   });
 }
 
@@ -279,6 +390,10 @@ function loadState() {
         sightings: parsed.sightings || [],
         alerts: parsed.alerts || [],
         incidents: parsed.incidents || [],
+        adminData: parsed.adminData || createAdminData(),
+        adminActiveModule: parsed.adminActiveModule || "students",
+        adminQuery: parsed.adminQuery || "",
+        adminEditing: parsed.adminEditing || null,
         selectedStudentId: parsed.selectedStudentId || "650302"
       };
     } catch (error) {
@@ -296,6 +411,10 @@ function seedState() {
     sightings: [],
     alerts: [],
     incidents: [],
+    adminData: createAdminData(),
+    adminActiveModule: "students",
+    adminQuery: "",
+    adminEditing: null,
     selectedStudentId: "650302"
   };
 
@@ -790,26 +909,328 @@ function renderSightingLog(sighting) {
 }
 
 function renderManagement() {
-  ui.managementContent.innerHTML = [
-    managementCard("จัดการนักเรียน", `${students.length} คน`, students.slice(0, 4).map((student) => [student.name, findClass(student.classId).name])),
-    managementCard("จัดการครู", `${teachers.length} คน`, teachers.slice(0, 4).map((teacher) => [teacher.name, teacher.role])),
-    managementCard("จัดการห้องเรียน", `${classes.length} ห้อง`, classes.map((classroom) => [classroom.name, classroom.advisor])),
-    managementCard("จัดการรายวิชา", `${subjects.length} วิชา`, subjects.slice(0, 5).map((subject) => [subject.name, subject.code])),
-    managementCard("จัดการตารางสอน", `${classes.length * periods.length} รายการ`, periods.slice(0, 4).map((period) => [period.label, `${period.start}-${period.end}`])),
-    managementCard("ตั้งค่าระบบ", "Role / QR / Export", roles.slice(0, 4).map((role) => [role.name, role.scope]))
-  ].join("");
+  ensureAdminState();
+  const moduleKey = state.adminActiveModule || "students";
+  const module = adminModules[moduleKey];
+  const rows = adminRows(moduleKey);
+  const query = normalize(state.adminQuery || "");
+  const filteredRows = rows.filter((row) => normalize(Object.values(row).join(" ")).includes(query));
+
+  ui.adminModuleTabs.innerHTML = Object.entries(adminModules).map(([key, config]) => `
+    <button class="admin-module-button ${key === moduleKey ? "is-active" : ""}" type="button" data-admin-module="${key}">
+      <span><span data-icon="${config.icon}"></span> ${config.label}</span>
+      <span class="admin-module-count">${adminRows(key).length}</span>
+    </button>
+  `).join("");
+
+  ui.adminTableTitle.textContent = module.label;
+  ui.adminTableSubtitle.textContent = module.subtitle;
+  ui.adminSearch.value = state.adminQuery || "";
+  ui.adminSearch.placeholder = `ค้นหา ${module.label}`;
+  ui.adminSummary.innerHTML = renderSummaryTiles([
+    ["ข้อมูลทั้งหมด", rows.length],
+    ["ผลค้นหา", filteredRows.length],
+    ["โมดูลทั้งหมด", Object.keys(adminModules).length],
+    ["สิทธิ์จัดการ", "Admin"]
+  ]);
+
+  ui.adminTable.innerHTML = renderAdminTable(moduleKey, module, filteredRows);
+  renderAdminForm(moduleKey, module);
+  bindAdminControls();
 }
 
-function managementCard(title, subtitle, rows) {
+function renderAdminTable(moduleKey, module, rows) {
+  if (!rows.length) return emptyState();
   return `
-    <article class="management-card">
-      <h3>${title}</h3>
-      <p>${subtitle}</p>
-      <div class="mini-table">
-        ${rows.map(([left, right]) => `<div class="mini-table-row"><span>${left}</span><span>${right}</span></div>`).join("")}
-      </div>
-    </article>
+    <table class="admin-table">
+      <thead>
+        <tr>
+          ${module.columns.map((column) => `<th>${fieldLabel(module, column)}</th>`).join("")}
+          <th>จัดการ</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows.map((row) => `
+          <tr>
+            ${module.columns.map((column) => `<td>${formatAdminValue(moduleKey, column, row[column])}</td>`).join("")}
+            <td>
+              <div class="admin-row-actions">
+                <button class="icon-button edit" type="button" data-admin-edit="${adminRowId(moduleKey, row)}" title="แก้ไข">
+                  <span data-icon="check"></span>
+                </button>
+                <button class="icon-button delete" type="button" data-admin-delete="${adminRowId(moduleKey, row)}" title="ลบ">
+                  <span data-icon="user-x"></span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
   `;
+}
+
+function renderAdminForm(moduleKey, module) {
+  const editingId = state.adminEditing?.module === moduleKey ? state.adminEditing.id : null;
+  const current = editingId ? adminRows(moduleKey).find((row) => String(adminRowId(moduleKey, row)) === String(editingId)) : null;
+  const item = current || defaultAdminItem(moduleKey);
+  ui.adminFormTitle.textContent = current ? `แก้ไข${module.label}` : `เพิ่ม${module.label.replace("จัดการ", "")}`;
+  ui.adminForm.innerHTML = `
+    <div class="admin-form-note">
+      ผู้ดูแลระบบสามารถเพิ่ม แก้ไข ลบ และเตรียมนำเข้า CSV ได้จากหน้านี้ ข้อมูลตัวอย่างจะบันทึกใน browser localStorage
+    </div>
+    ${module.fields.map((field) => renderAdminField(field, item[field.key])).join("")}
+    <div class="button-row">
+      <button class="primary-button" type="submit">
+        <span data-icon="check"></span><span>${current ? "บันทึกการแก้ไข" : "เพิ่มข้อมูล"}</span>
+      </button>
+      <button id="adminCancelBtn" class="ghost-button" type="button">
+        <span data-icon="refresh-ccw"></span><span>ล้างฟอร์ม</span>
+      </button>
+    </div>
+  `;
+}
+
+function renderAdminField(field, value) {
+  const required = field.required ? "required" : "";
+  if (field.type === "select") {
+    return `
+      <label>${field.label}
+        <select name="${field.key}" ${required}>
+          ${field.options.map(([optionValue, label]) => `<option value="${optionValue}" ${String(value) === String(optionValue) ? "selected" : ""}>${label}</option>`).join("")}
+        </select>
+      </label>
+    `;
+  }
+  if (field.type === "class") return renderAdminSelect(field, value, state.adminData.classrooms, "id", "name");
+  if (field.type === "teacher") return renderAdminSelect(field, value, state.adminData.teachers, "id", "name");
+  if (field.type === "subject") return renderAdminSelect(field, value, state.adminData.subjects, "id", "name");
+  if (field.type === "role") return renderAdminSelect(field, value, state.adminData.roles, "id", "name");
+  if (field.type === "period") {
+    return `
+      <label>${field.label}
+        <select name="${field.key}" ${required}>
+          ${state.adminData.periods.map((period) => `<option value="${period.no}" ${String(value) === String(period.no) ? "selected" : ""}>${period.label} (${period.start}-${period.end})</option>`).join("")}
+        </select>
+      </label>
+    `;
+  }
+  return `
+    <label>${field.label}
+      <input name="${field.key}" type="${field.type || "text"}" value="${escapeAttr(value ?? "")}" ${required} />
+    </label>
+  `;
+}
+
+function renderAdminSelect(field, value, rows, valueKey, labelKey) {
+  return `
+    <label>${field.label}
+      <select name="${field.key}" ${field.required ? "required" : ""}>
+        ${rows.map((row) => `<option value="${row[valueKey]}" ${String(value) === String(row[valueKey]) ? "selected" : ""}>${row[labelKey]}</option>`).join("")}
+      </select>
+    </label>
+  `;
+}
+
+function bindAdminControls() {
+  ui.adminModuleTabs.querySelectorAll("[data-admin-module]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.adminActiveModule = button.dataset.adminModule;
+      state.adminQuery = "";
+      state.adminEditing = null;
+      saveState();
+      render();
+    });
+  });
+
+  ui.adminTable.querySelectorAll("[data-admin-edit]").forEach((button) => {
+    button.addEventListener("click", () => startAdminEdit(button.dataset.adminEdit));
+  });
+  ui.adminTable.querySelectorAll("[data-admin-delete]").forEach((button) => {
+    button.addEventListener("click", () => deleteAdminRow(button.dataset.adminDelete));
+  });
+  ui.adminForm.onsubmit = saveAdminForm;
+  const cancel = document.getElementById("adminCancelBtn");
+  if (cancel) cancel.addEventListener("click", startAdminCreate);
+}
+
+function createAdminData() {
+  const palette = ["#45c7dc", "#4f46e5", "#4169e1", "#047a25", "#3ee06d", "#6ee33f", "#ef4444", "#f59e0b", "#14b8a6", "#8b5cf6"];
+  return {
+    students: students.map((student) => ({
+      ...student,
+      nickname: "-",
+      status: "active"
+    })),
+    teachers: teachers.map((teacher, index) => ({
+      ...teacher,
+      email: `teacher${index + 1}@school.local`,
+      permission: index === 3 ? "discipline" : "subject"
+    })),
+    subjects: subjects.map((subject, index) => ({
+      ...subject,
+      credit: subject.id === "art" ? "0.5" : "1",
+      hours: subject.id === "art" ? "2" : "3",
+      level: index % 2 === 0 ? "ม.2" : "ม.5",
+      room: String((index % 3) + 1),
+      color: palette[index % palette.length]
+    })),
+    classrooms: classes.map((classroom) => ({ ...classroom })),
+    periods: periods.map((period) => ({ ...period, autoAbsent: "yes" })),
+    timetables: Object.entries(schedules).flatMap(([classId, daySchedule]) =>
+      Object.entries(daySchedule).map(([periodNo, item]) => ({
+        id: `tt-${classId}-${periodNo}`,
+        day: "จันทร์",
+        classId,
+        periodNo: Number(periodNo),
+        subjectId: item.subjectId,
+        teacherId: item.teacherId,
+        roomName: item.room
+      }))
+    ),
+    roles: roles.map((role) => ({
+      ...role,
+      canManage: role.id === "admin" ? "yes" : role.id === "executive" ? "no" : "limited"
+    }))
+  };
+}
+
+function ensureAdminState() {
+  if (!state.adminData) state.adminData = createAdminData();
+  Object.keys(adminModules).forEach((key) => {
+    if (!state.adminData[key]) state.adminData[key] = createAdminData()[key];
+  });
+  if (!state.adminActiveModule || !adminModules[state.adminActiveModule]) state.adminActiveModule = "students";
+  if (typeof state.adminQuery !== "string") state.adminQuery = "";
+}
+
+function adminRows(moduleKey) {
+  ensureAdminState();
+  return state.adminData[moduleKey] || [];
+}
+
+function adminRowId(moduleKey, row) {
+  return moduleKey === "periods" ? row.no : row.id;
+}
+
+function fieldLabel(module, key) {
+  return module.fields.find((field) => field.key === key)?.label || key;
+}
+
+function defaultAdminItem(moduleKey) {
+  const next = adminRows(moduleKey).length + 1;
+  const defaults = {
+    students: { id: `NEW${String(next).padStart(3, "0")}`, name: "", nickname: "-", classId: state.adminData.classrooms[0]?.id || "", number: next, guardian: "", qr: `QR:NEW${String(next).padStart(3, "0")}`, status: "active" },
+    teachers: { id: `t${String(next + 5).padStart(2, "0")}`, code: `T${String(next + 5).padStart(3, "0")}`, name: "", role: "", phone: "", email: "", permission: "subject" },
+    subjects: { id: `sub-${next}`, code: "", name: "", credit: "1", hours: "2", level: "ม.1", room: "1", color: "#4169e1" },
+    classrooms: { id: `class-${next}`, level: "ม.1", room: String(next), name: `ม.1/${next}`, advisorId: state.adminData.teachers[0]?.id || "" },
+    timetables: { id: `tt-new-${next}`, day: "จันทร์", classId: state.adminData.classrooms[0]?.id || "", periodNo: state.adminData.periods[0]?.no || 1, subjectId: state.adminData.subjects[0]?.id || "", teacherId: state.adminData.teachers[0]?.id || "", roomName: "" },
+    periods: { no: next, label: `คาบ ${next}`, start: "08:40", end: "09:30", autoAbsent: "yes" },
+    roles: { id: `role-${next}`, name: "", scope: "", canManage: "no" }
+  };
+  return defaults[moduleKey] || {};
+}
+
+function startAdminCreate() {
+  state.adminEditing = null;
+  saveState();
+  render();
+}
+
+function startAdminEdit(id) {
+  state.adminEditing = { module: state.adminActiveModule, id };
+  saveState();
+  render();
+}
+
+function deleteAdminRow(id) {
+  const moduleKey = state.adminActiveModule;
+  state.adminData[moduleKey] = adminRows(moduleKey).filter((row) => String(adminRowId(moduleKey, row)) !== String(id));
+  state.adminEditing = null;
+  addAlert("system", "ลบข้อมูลแล้ว", `${adminModules[moduleKey].label}: ${id}`);
+  saveState();
+  render();
+}
+
+function saveAdminForm(event) {
+  event.preventDefault();
+  const moduleKey = state.adminActiveModule;
+  const module = adminModules[moduleKey];
+  const data = new FormData(ui.adminForm);
+  const item = {};
+  module.fields.forEach((field) => {
+    item[field.key] = data.get(field.key) || "";
+  });
+  if (moduleKey === "students" && !item.qr) item.qr = `QR:${item.id}`;
+  if (moduleKey === "classrooms") {
+    const advisor = state.adminData.teachers.find((teacher) => teacher.id === item.advisorId);
+    item.advisor = advisor?.name || "-";
+  }
+
+  const editingId = state.adminEditing?.module === moduleKey ? state.adminEditing.id : null;
+  const rowId = adminRowId(moduleKey, item);
+  const rows = adminRows(moduleKey);
+  const index = editingId
+    ? rows.findIndex((row) => String(adminRowId(moduleKey, row)) === String(editingId))
+    : rows.findIndex((row) => String(adminRowId(moduleKey, row)) === String(rowId));
+  if (index >= 0) rows[index] = { ...rows[index], ...item };
+  else rows.push(item);
+
+  state.adminData[moduleKey] = rows;
+  state.adminEditing = { module: moduleKey, id: adminRowId(moduleKey, item) };
+  addAlert("system", "บันทึกข้อมูล Admin", `${module.label}: ${adminRowId(moduleKey, item)}`);
+  saveState();
+  render();
+}
+
+function formatAdminValue(moduleKey, key, value) {
+  if (key === "color") return `<span class="color-swatch" style="background:${escapeAttr(value || "#ffffff")}"></span>`;
+  if (key === "classId") return state.adminData.classrooms.find((row) => row.id === value)?.name || value || "-";
+  if (key === "teacherId" || key === "advisorId") return state.adminData.teachers.find((row) => row.id === value)?.name || value || "-";
+  if (key === "subjectId") return state.adminData.subjects.find((row) => row.id === value)?.name || value || "-";
+  if (key === "periodNo") {
+    const period = state.adminData.periods.find((row) => String(row.no) === String(value));
+    return period ? `${period.label} (${period.start}-${period.end})` : value;
+  }
+  if (key === "permission") return state.adminData.roles.find((row) => row.id === value)?.name || value || "-";
+  if (key === "status") {
+    const labels = { active: "กำลังศึกษา", watch: "เฝ้าระวัง", inactive: "พักการเรียน" };
+    return `<span class="status-pill status-${value === "watch" ? "late" : value === "inactive" ? "absent" : "present"}">${labels[value] || value || "-"}</span>`;
+  }
+  if (key === "canManage") {
+    const labels = { yes: "ทำได้", no: "ไม่ได้", limited: "จำกัดสิทธิ์" };
+    return `<span class="status-pill status-${value === "yes" ? "present" : value === "limited" ? "late" : "unknown"}">${labels[value] || value || "-"}</span>`;
+  }
+  return escapeHtml(value || "-");
+}
+
+function exportAdminSampleCsv() {
+  const moduleKey = state.adminActiveModule || "students";
+  const module = adminModules[moduleKey];
+  const rows = [module.fields.map((field) => field.key)];
+  adminRows(moduleKey).slice(0, 5).forEach((row) => {
+    rows.push(module.fields.map((field) => row[field.key] || ""));
+  });
+  const csv = rows.map((row) => row.map(csvCell).join(",")).join("\n");
+  const blob = new Blob(["\ufeff", csv], { type: "text/csv;charset=utf-8" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `${moduleKey}-sample.csv`;
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function escapeAttr(value) {
+  return escapeHtml(value);
 }
 
 function renderSettings() {

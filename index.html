@@ -356,15 +356,52 @@
         <section id="managementView" class="view" aria-labelledby="managementHeading">
           <div class="report-actions">
             <div>
-              <h3 id="managementHeading">จัดการข้อมูลพื้นฐาน</h3>
-              <p>ต้นแบบหน้าจอสำหรับแอดมิน: นักเรียน ครู ห้องเรียน รายวิชา และตารางสอน</p>
+              <h3 id="managementHeading">Admin Console</h3>
+              <p>ผู้ดูแลระบบจัดการนักเรียน ครู รายวิชา ห้องเรียน ตารางสอน คาบเรียน และสิทธิ์ทั้งหมด</p>
             </div>
-            <button class="secondary-button" type="button" data-action="mock-save">
-              <span data-icon="check"></span>
-              <span>บันทึกตัวอย่าง</span>
-            </button>
+            <div class="button-row">
+              <button id="adminSampleBtn" class="ghost-button" type="button">
+                <span data-icon="download"></span>
+                <span>ตัวอย่าง CSV</span>
+              </button>
+              <button id="adminImportBtn" class="secondary-button" type="button">
+                <span data-icon="download"></span>
+                <span>นำเข้า CSV</span>
+              </button>
+              <button id="adminAddBtn" class="primary-button" type="button">
+                <span data-icon="check"></span>
+                <span>เพิ่มข้อมูล</span>
+              </button>
+            </div>
           </div>
-          <div id="managementContent" class="management-grid"></div>
+          <div class="admin-shell">
+            <aside class="admin-nav" aria-label="เมนูผู้ดูแลระบบ">
+              <div id="adminModuleTabs" class="admin-module-tabs"></div>
+            </aside>
+            <section class="panel admin-table-panel">
+              <div class="panel-header">
+                <div>
+                  <h3 id="adminTableTitle">จัดการนักเรียน</h3>
+                  <p id="adminTableSubtitle">ค้นหา เพิ่ม แก้ไข ลบ และเตรียมนำเข้า CSV</p>
+                </div>
+                <label>
+                  ค้นหา
+                  <input id="adminSearch" type="search" placeholder="ค้นหาในโมดูลนี้" />
+                </label>
+              </div>
+              <div id="adminSummary" class="summary-grid"></div>
+              <div id="adminTable" class="admin-table-wrap"></div>
+            </section>
+            <section class="panel admin-form-panel">
+              <div class="panel-header">
+                <div>
+                  <h3 id="adminFormTitle">เพิ่ม/แก้ไขข้อมูล</h3>
+                  <p>ฟอร์มตัวอย่างสำหรับผู้ดูแลระบบ</p>
+                </div>
+              </div>
+              <form id="adminForm" class="admin-form"></form>
+            </section>
+          </div>
         </section>
 
         <section id="settingsView" class="view" aria-labelledby="settingsHeading">

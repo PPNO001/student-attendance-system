@@ -734,47 +734,161 @@ textarea:focus {
   text-align: center;
 }
 
-.management-grid {
+.admin-shell {
   display: grid;
-  grid-template-columns: repeat(3, minmax(240px, 1fr));
+  grid-template-columns: 230px minmax(0, 1fr) 340px;
   gap: 14px;
+  align-items: start;
 }
 
-.management-card {
-  min-height: 210px;
-  padding: 16px;
+.admin-nav {
+  position: sticky;
+  top: 16px;
+  padding: 12px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
   box-shadow: var(--shadow);
 }
 
-.management-card h3,
-.management-card p {
-  margin: 0;
-}
-
-.management-card p {
-  color: var(--muted);
-}
-
-.mini-table {
+.admin-module-tabs {
   display: grid;
   gap: 8px;
-  margin-top: 12px;
 }
 
-.mini-table-row {
+.admin-module-button {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--line);
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  text-align: left;
 }
 
-.mini-table-row span:last-child {
+.admin-module-button.is-active {
+  border-color: rgba(35, 87, 137, 0.28);
+  background: #e8f1f8;
+  color: var(--brand-strong);
+  font-weight: 800;
+}
+
+.admin-module-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  min-height: 24px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--surface-soft);
   color: var(--muted);
-  text-align: right;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.admin-table-panel,
+.admin-form-panel {
+  min-width: 0;
+}
+
+.admin-table-panel .panel-header {
+  align-items: end;
+}
+
+.admin-table-panel .panel-header label {
+  min-width: min(100%, 320px);
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+  padding: 0 16px 16px;
+}
+
+.admin-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.admin-table th {
+  background: var(--surface-soft);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.admin-table td {
+  color: var(--ink);
+}
+
+.admin-row-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.icon-button {
+  display: inline-grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--muted);
+}
+
+.icon-button.edit {
+  border-color: #f7d37b;
+  background: #fff3d6;
+  color: #a16207;
+}
+
+.icon-button.delete {
+  border-color: #fac3bf;
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.admin-form {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.admin-form .button-row {
+  align-items: center;
+}
+
+.admin-form-note {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.color-swatch {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  vertical-align: middle;
 }
 
 .schema-list {
@@ -875,9 +989,20 @@ textarea:focus {
   .two-column,
   .report-grid,
   .dashboard-grid,
-  .management-grid,
   .schema-list {
     grid-template-columns: 1fr;
+  }
+
+  .admin-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-nav {
+    position: static;
+  }
+
+  .admin-module-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .report-wide {
@@ -907,6 +1032,10 @@ textarea:focus {
 
   .scan-card,
   .student-card-demo {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-module-tabs {
     grid-template-columns: 1fr;
   }
 }
