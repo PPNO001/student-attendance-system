@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ระบบเช็คชื่อนักเรียน</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="เมนูหลัก">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">SA</div>
+          <div>
+            <h1>ระบบเช็คชื่อ</h1>
+            <p>สำหรับครูทั้งโรงเรียน</p>
+          </div>
+        </div>
+
+        <nav class="tabs" aria-label="เลือกหน้าจอ">
+          <button class="tab-button is-active" type="button" data-view="attendance">
+            <span data-icon="clipboard-check"></span>
+            <span>เช็คชื่อรายคาบ</span>
+          </button>
+          <button class="tab-button" type="button" data-view="lookup">
+            <span data-icon="search"></span>
+            <span>ตรวจเด็กนอกห้อง</span>
+          </button>
+          <button class="tab-button" type="button" data-view="gate">
+            <span data-icon="door-open"></span>
+            <span>ประตูโรงเรียน</span>
+          </button>
+          <button class="tab-button" type="button" data-view="reports">
+            <span data-icon="bar-chart-3"></span>
+            <span>รายงาน</span>
+          </button>
+        </nav>
+
+        <section class="sidebar-panel" aria-label="สถานะวันนี้">
+          <div class="mini-label">วันนี้</div>
+          <div class="clock-line">
+            <span data-icon="calendar-days"></span>
+            <span id="todayLabel">-</span>
+          </div>
+          <div class="clock-line">
+            <span data-icon="clock"></span>
+            <span id="liveClock">-</span>
+          </div>
+        </section>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">โรงเรียนตัวอย่าง</p>
+            <h2 id="viewTitle">เช็คชื่อรายคาบ</h2>
+          </div>
+          <div class="topbar-controls">
+            <label>
+              วันที่
+              <input id="dateInput" type="date" />
+            </label>
+            <label>
+              ครูผู้บันทึก
+              <select id="teacherSelect"></select>
+            </label>
+          </div>
+        </header>
+
+        <section id="attendanceView" class="view is-active" aria-labelledby="attendanceHeading">
+          <div class="control-strip">
+            <label>
+              ห้องเรียน
+              <select id="classSelect"></select>
+            </label>
+            <label>
+              คาบเรียน
+              <select id="periodSelect"></select>
+            </label>
+            <label>
+              เวลาที่เช็ค
+              <input id="attendanceTime" type="time" step="60" />
+            </label>
+            <button id="closePeriodBtn" class="secondary-button" type="button">
+              <span data-icon="user-x"></span>
+              <span>ปิดคาบ</span>
+            </button>
+          </div>
+
+          <div class="summary-grid" id="attendanceSummary" aria-label="สรุปการเช็คชื่อ"></div>
+
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h3 id="attendanceHeading">รายชื่อนักเรียน</h3>
+                <p id="periodMeta">-</p>
+              </div>
+              <div class="legend">
+                <span><i class="dot ok"></i>มา</span>
+                <span><i class="dot late"></i>สาย</span>
+                <span><i class="dot danger"></i>ขาด/โดด</span>
+                <span><i class="dot neutral"></i>ยังไม่เช็ค</span>
+              </div>
+            </div>
+            <div id="attendanceList" class="student-list"></div>
+          </section>
+        </section>
+
+        <section id="lookupView" class="view" aria-labelledby="lookupHeading">
+          <div class="two-column">
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3 id="lookupHeading">ค้นหานักเรียนที่พบนอกห้อง</h3>
+                  <p>ค้นจากชื่อ เลขประจำตัว หรือห้องเรียน</p>
+                </div>
+              </div>
+              <div class="lookup-tools">
+                <label>
+                  คำค้น
+                  <input id="studentSearch" type="search" placeholder="เช่น ภูมิ, 660101, ม.1/1" />
+                </label>
+                <label>
+                  เวลาเจอตัว
+                  <input id="lookupTime" type="time" step="60" />
+                </label>
+              </div>
+              <div id="lookupResults" class="lookup-results"></div>
+            </section>
+
+            <section class="panel" id="profilePanel">
+              <div id="studentProfile"></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="gateView" class="view" aria-labelledby="gateHeading">
+          <div class="two-column">
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3 id="gateHeading">บันทึกเข้าโรงเรียน</h3>
+                  <p>ถ้ามาหลัง 08:40 จะถูกบันทึกสายคาบ 1 ทันที</p>
+                </div>
+              </div>
+              <div class="lookup-tools">
+                <label>
+                  ค้นหานักเรียน
+                  <input id="gateSearch" type="search" placeholder="ชื่อ เลขประจำตัว หรือห้อง" />
+                </label>
+                <label>
+                  เวลาเข้าโรงเรียน
+                  <input id="gateTime" type="time" step="60" />
+                </label>
+              </div>
+              <div id="gateResults" class="lookup-results"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>รายการเข้าโรงเรียนล่าสุด</h3>
+                  <p>ข้อมูลวันนี้จากประตูโรงเรียน</p>
+                </div>
+              </div>
+              <div id="gateLog" class="activity-log"></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="reportsView" class="view" aria-labelledby="reportsHeading">
+          <div class="report-actions">
+            <div>
+              <h3 id="reportsHeading">รายงานประจำวัน</h3>
+              <p>ติดตามนักเรียนสาย ขาด/โดด และการพบตัวนอกห้อง</p>
+            </div>
+            <div class="button-row">
+              <button id="exportBtn" class="secondary-button" type="button">
+                <span data-icon="download"></span>
+                <span>ส่งออก CSV</span>
+              </button>
+              <button id="resetBtn" class="ghost-button" type="button">
+                <span data-icon="refresh-ccw"></span>
+                <span>รีเซ็ตข้อมูลทดลอง</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="reportSummary" class="summary-grid"></div>
+
+          <div class="report-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>นักเรียนสายวันนี้</h3>
+                  <p>รวมจากครูและประตูโรงเรียน</p>
+                </div>
+              </div>
+              <div id="lateReport" class="activity-log"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>ขาด/โดดรายคาบ</h3>
+                  <p>ใช้ตรวจเมื่อพบเด็กอยู่ผิดพื้นที่</p>
+                </div>
+              </div>
+              <div id="absentReport" class="activity-log"></div>
+            </section>
+
+            <section class="panel report-wide">
+              <div class="panel-header">
+                <div>
+                  <h3>บันทึกการพบตัวนอกห้อง</h3>
+                  <p>ตำแหน่ง เวลา ผู้บันทึก และการดำเนินการ</p>
+                </div>
+              </div>
+              <div id="sightingReport" class="activity-log"></div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <template id="emptyTemplate">
+      <div class="empty-state">
+        <span data-icon="search"></span>
+        <p>ไม่พบข้อมูล</p>
+      </div>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
