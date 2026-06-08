@@ -109,6 +109,8 @@ const statusTone = {
   unknown: "unknown"
 };
 
+const adminOnlyViews = new Set(["management", "settings"]);
+
 const adminModules = {
   students: {
     label: "จัดการนักเรียน",
@@ -348,6 +350,16 @@ function bindEvents() {
 }
 
 function switchView(view) {
+  if (!canAccessView(view)) {
+    addAlert("system", "จำกัดสิทธิ์ Admin", "หน้านี้เข้าได้เฉพาะผู้ดูแลระบบเท่านั้น");
+    saveState();
+    view = "dashboard";
+  }
+  activateView(view);
+  render();
+}
+
+function activateView(view) {
   document.querySelectorAll(".tab-button").forEach((button) => {
     button.classList.toggle("is-active", button.dataset.view === view);
   });
@@ -365,7 +377,34 @@ function switchView(view) {
     settings: "ตั้งค่าระบบ"
   };
   ui.viewTitle.textContent = titles[view] || "ระบบเช็คชื่อ";
-  render();
+}
+
+function activeView() {
+  const active = document.querySelector(".view.is-active");
+  return active ? active.id.replace(/View$/, "") : "dashboard";
+}
+
+function isAdminRole() {
+  return ui.roleSelect?.value === "admin";
+}
+
+function canAccessView(view) {
+  return !adminOnlyViews.has(view) || isAdminRole();
+}
+
+function updateAccessUI() {
+  const isAdmin = isAdminRole();
+  document.querySelectorAll(".tab-button").forEach((button) => {
+    const restricted = adminOnlyViews.has(button.dataset.view);
+    button.classList.toggle("is-hidden", restricted && !isAdmin);
+    button.disabled = restricted && !isAdmin;
+    if (restricted) {
+      button.title = isAdmin ? "" : "เข้าได้เฉพาะผู้ดูแลระบบ";
+    }
+  });
+  if (!canAccessView(activeView())) {
+    activateView("dashboard");
+  }
 }
 
 function tickClock() {
@@ -473,6 +512,7 @@ function saveState(targetState = state) {
 }
 
 function render() {
+  updateAccessUI();
   renderDashboard();
   renderAttendance();
   renderLookup();
@@ -909,6 +949,16 @@ function renderSightingLog(sighting) {
 }
 
 function renderManagement() {
+  if (!isAdminRole()) {
+    ui.adminModuleTabs.innerHTML = "";
+    ui.adminSummary.innerHTML = "";
+    ui.adminTable.innerHTML = accessDeniedMarkup();
+    ui.adminForm.innerHTML = "";
+    ui.adminTableTitle.textContent = "จำกัดสิทธิ์";
+    ui.adminTableSubtitle.textContent = "Admin Console เข้าได้เฉพาะผู้ดูแลระบบเท่านั้น";
+    ui.adminFormTitle.textContent = "ไม่มีสิทธิ์ใช้งาน";
+    return;
+  }
   ensureAdminState();
   const moduleKey = state.adminActiveModule || "students";
   const module = adminModules[moduleKey];
@@ -1234,6 +1284,12 @@ function escapeAttr(value) {
 }
 
 function renderSettings() {
+  if (!isAdminRole()) {
+    ui.periodSettings.innerHTML = accessDeniedMarkup();
+    ui.permissionMatrix.innerHTML = accessDeniedMarkup();
+    ui.schemaList.innerHTML = accessDeniedMarkup();
+    return;
+  }
   ui.periodSettings.innerHTML = `
     ${periods.map((period) => `
       <article class="log-row">
@@ -1636,4 +1692,14 @@ function createId() {
 
 function emptyState() {
   return document.getElementById("emptyTemplate").innerHTML;
+}
+
+function accessDeniedMarkup() {
+  return `
+    <div class="access-denied">
+      <span data-icon="shield-check"></span>
+      <strong>เข้าได้เฉพาะผู้ดูแลระบบ</strong>
+      <p>สิทธิ์ปัจจุบันไม่สามารถจัดการข้อมูลหรือเปลี่ยนค่าระบบได้ กรุณาเข้าสู่ระบบด้วยบัญชี Admin</p>
+    </div>
+  `;
 }

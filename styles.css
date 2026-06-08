@@ -133,6 +133,10 @@ button {
   font-weight: 700;
 }
 
+.is-hidden {
+  display: none !important;
+}
+
 .sidebar-panel {
   margin-top: auto;
   padding: 14px;
@@ -666,6 +670,27 @@ textarea:focus {
 
 .empty-state p {
   margin: 0;
+}
+
+.access-denied {
+  display: grid;
+  min-height: 220px;
+  place-items: center;
+  gap: 8px;
+  padding: 28px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.access-denied strong {
+  color: var(--ink);
+  font-size: 20px;
+}
+
+.access-denied p {
+  max-width: 440px;
+  margin: 0;
+  line-height: 1.6;
 }
 
 .guard-list {
