@@ -18,13 +18,21 @@
         </div>
 
         <nav class="tabs" aria-label="เลือกหน้าจอ">
-          <button class="tab-button is-active" type="button" data-view="attendance">
+          <button class="tab-button is-active" type="button" data-view="dashboard">
+            <span data-icon="layout-dashboard"></span>
+            <span>Dashboard</span>
+          </button>
+          <button class="tab-button" type="button" data-view="attendance">
             <span data-icon="clipboard-check"></span>
             <span>เช็คชื่อรายคาบ</span>
           </button>
           <button class="tab-button" type="button" data-view="lookup">
             <span data-icon="search"></span>
             <span>ตรวจเด็กนอกห้อง</span>
+          </button>
+          <button class="tab-button" type="button" data-view="scan">
+            <span data-icon="qr-code"></span>
+            <span>สแกน QR Code</span>
           </button>
           <button class="tab-button" type="button" data-view="gate">
             <span data-icon="door-open"></span>
@@ -33,6 +41,14 @@
           <button class="tab-button" type="button" data-view="reports">
             <span data-icon="bar-chart-3"></span>
             <span>รายงาน</span>
+          </button>
+          <button class="tab-button" type="button" data-view="management">
+            <span data-icon="database"></span>
+            <span>จัดการข้อมูล</span>
+          </button>
+          <button class="tab-button" type="button" data-view="settings">
+            <span data-icon="settings"></span>
+            <span>ตั้งค่าระบบ</span>
           </button>
         </nav>
 
@@ -53,12 +69,16 @@
         <header class="topbar">
           <div>
             <p class="eyebrow">โรงเรียนตัวอย่าง</p>
-            <h2 id="viewTitle">เช็คชื่อรายคาบ</h2>
+            <h2 id="viewTitle">Dashboard</h2>
           </div>
           <div class="topbar-controls">
             <label>
               วันที่
               <input id="dateInput" type="date" />
+            </label>
+            <label>
+              สิทธิ์ผู้ใช้งาน
+              <select id="roleSelect"></select>
             </label>
             <label>
               ครูผู้บันทึก
@@ -67,7 +87,56 @@
           </div>
         </header>
 
-        <section id="attendanceView" class="view is-active" aria-labelledby="attendanceHeading">
+        <section id="dashboardView" class="view is-active" aria-labelledby="dashboardHeading">
+          <div class="report-actions">
+            <div>
+              <h3 id="dashboardHeading">ภาพรวมทั้งโรงเรียน</h3>
+              <p>สถานะวันนี้ นักเรียนเสี่ยง และห้องที่ต้องติดตาม</p>
+            </div>
+            <div class="button-row">
+              <button id="autoRulesBtn" class="secondary-button" type="button">
+                <span data-icon="shield-check"></span>
+                <span>ตรวจอัตโนมัติ</span>
+              </button>
+              <button id="openAttendanceBtn" class="primary-button" type="button">
+                <span data-icon="clipboard-check"></span>
+                <span>เช็คชื่อ</span>
+              </button>
+            </div>
+          </div>
+          <div id="dashboardSummary" class="summary-grid"></div>
+          <div class="dashboard-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>นักเรียนเสี่ยงโดดเรียน</h3>
+                  <p>เข้าโรงเรียนแล้วแต่ยังไม่มีประวัติเข้าเรียนรายคาบ</p>
+                </div>
+              </div>
+              <div id="riskList" class="activity-log"></div>
+            </section>
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>ห้องที่มาสายมากที่สุด</h3>
+                  <p>จัดอันดับจากข้อมูลวันนี้</p>
+                </div>
+              </div>
+              <div id="roomStats" class="activity-log"></div>
+            </section>
+            <section class="panel report-wide">
+              <div class="panel-header">
+                <div>
+                  <h3>แจ้งเตือนในระบบ</h3>
+                  <p>ส่งถึงครูประจำวิชา ครูที่ปรึกษา และฝ่ายปกครอง</p>
+                </div>
+              </div>
+              <div id="alertFeed" class="activity-log"></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="attendanceView" class="view" aria-labelledby="attendanceHeading">
           <div class="control-strip">
             <label>
               ห้องเรียน
@@ -130,6 +199,69 @@
 
             <section class="panel" id="profilePanel">
               <div id="studentProfile"></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="scanView" class="view" aria-labelledby="scanHeading">
+          <div class="two-column">
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3 id="scanHeading">สแกน QR Code / Barcode</h3>
+                  <p>รองรับนักเรียนสแกนรายคาบ ครูสแกนบัตร และประตูโรงเรียน</p>
+                </div>
+              </div>
+              <div class="lookup-tools">
+                <label>
+                  โหมดสแกน
+                  <select id="scanMode">
+                    <option value="period">นักเรียนสแกนเข้าเรียนรายคาบ</option>
+                    <option value="teacher-card">ครูสแกนบัตรนักเรียน</option>
+                    <option value="gate">ประตูโรงเรียนสแกนเข้าโรงเรียน</option>
+                  </select>
+                </label>
+                <label>
+                  เวลา
+                  <input id="scanTime" type="time" step="60" />
+                </label>
+                <label>
+                  รหัส/QR นักเรียน
+                  <input id="scanInput" type="search" placeholder="เช่น QR:650302 หรือ 650302" />
+                </label>
+              </div>
+              <div class="guard-list">
+                <label class="check-line"><input id="guardTime" type="checkbox" checked /> จำกัดเวลาเช็คชื่อตามคาบ</label>
+                <label class="check-line"><input id="guardDevice" type="checkbox" checked /> จำกัดอุปกรณ์ซ้ำ</label>
+                <label class="check-line"><input id="guardGps" type="checkbox" /> ตรวจ GPS ภายในโรงเรียน</label>
+              </div>
+              <div class="button-row scan-actions">
+                <button id="scanDemoBtn" class="secondary-button" type="button">
+                  <span data-icon="qr-code"></span>
+                  <span>ใช้ QR ตัวอย่าง</span>
+                </button>
+                <button id="processScanBtn" class="primary-button" type="button">
+                  <span data-icon="scan-line"></span>
+                  <span>บันทึกจากสแกน</span>
+                </button>
+              </div>
+              <div id="scanResult" class="scan-result"></div>
+            </section>
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>ตัวอย่างบัตรนักเรียน</h3>
+                  <p>ใช้ทดสอบการค้นหาและสแกน</p>
+                </div>
+              </div>
+              <div class="student-card-demo">
+                <div class="fake-qr">QR<br />650302</div>
+                <div>
+                  <h3>ด.ช.วรเมธ ชาญชัย</h3>
+                  <p>รหัส 650302 | ม.2/3</p>
+                  <p>ครูที่ปรึกษา ครูอารยา ใจตรง</p>
+                </div>
+              </div>
             </section>
           </div>
         </section>
@@ -217,6 +349,52 @@
                 </div>
               </div>
               <div id="sightingReport" class="activity-log"></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="managementView" class="view" aria-labelledby="managementHeading">
+          <div class="report-actions">
+            <div>
+              <h3 id="managementHeading">จัดการข้อมูลพื้นฐาน</h3>
+              <p>ต้นแบบหน้าจอสำหรับแอดมิน: นักเรียน ครู ห้องเรียน รายวิชา และตารางสอน</p>
+            </div>
+            <button class="secondary-button" type="button" data-action="mock-save">
+              <span data-icon="check"></span>
+              <span>บันทึกตัวอย่าง</span>
+            </button>
+          </div>
+          <div id="managementContent" class="management-grid"></div>
+        </section>
+
+        <section id="settingsView" class="view" aria-labelledby="settingsHeading">
+          <div class="two-column">
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3 id="settingsHeading">ตั้งค่าคาบเรียน</h3>
+                  <p>ใช้กำหนดเงื่อนไขมาเรียน สาย และขาดอัตโนมัติ</p>
+                </div>
+              </div>
+              <div id="periodSettings" class="activity-log"></div>
+            </section>
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h3>สิทธิ์ผู้ใช้งาน</h3>
+                  <p>Role permission สำหรับโรงเรียน</p>
+                </div>
+              </div>
+              <div id="permissionMatrix" class="activity-log"></div>
+            </section>
+            <section class="panel report-wide">
+              <div class="panel-header">
+                <div>
+                  <h3>โครงฐานข้อมูลที่ควรมี</h3>
+                  <p>เมื่อต่อยอดเป็น PHP 8 + MySQL</p>
+                </div>
+              </div>
+              <div id="schemaList" class="schema-list"></div>
             </section>
           </div>
         </section>

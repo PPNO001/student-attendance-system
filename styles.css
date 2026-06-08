@@ -277,7 +277,7 @@ textarea:focus {
 
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 10px;
   margin-bottom: 14px;
 }
@@ -447,7 +447,23 @@ textarea:focus {
   color: var(--violet);
 }
 
-.status-unmarked {
+.status-leave {
+  background: var(--violet-soft);
+  color: var(--violet);
+}
+
+.status-skip {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.status-outside {
+  background: var(--teal-soft);
+  color: var(--teal);
+}
+
+.status-unmarked,
+.status-unknown {
   background: var(--surface-soft);
   color: var(--muted);
 }
@@ -623,7 +639,8 @@ textarea:focus {
   gap: 12px;
 }
 
-.report-grid {
+.report-grid,
+.dashboard-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(260px, 1fr));
   gap: 14px;
@@ -649,6 +666,142 @@ textarea:focus {
 
 .empty-state p {
   margin: 0;
+}
+
+.guard-list {
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.check-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.check-line input {
+  width: 18px;
+  min-height: 18px;
+  accent-color: var(--brand);
+}
+
+.scan-actions {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.scan-result {
+  padding: 16px;
+}
+
+.scan-card,
+.student-card-demo {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  align-items: center;
+  padding: 18px;
+}
+
+.student-card-demo h3,
+.student-card-demo p {
+  margin: 0;
+}
+
+.student-card-demo p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.fake-qr {
+  display: grid;
+  width: 112px;
+  height: 112px;
+  place-items: center;
+  border: 8px solid var(--ink);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, var(--ink) 10px, transparent 10px) 0 0 / 28px 28px,
+    linear-gradient(var(--ink) 10px, transparent 10px) 0 0 / 28px 28px,
+    #ffffff;
+  color: var(--brand);
+  font-weight: 900;
+  text-align: center;
+}
+
+.management-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.management-card {
+  min-height: 210px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.management-card h3,
+.management-card p {
+  margin: 0;
+}
+
+.management-card p {
+  color: var(--muted);
+}
+
+.mini-table {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.mini-table-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.mini-table-row span:last-child {
+  color: var(--muted);
+  text-align: right;
+}
+
+.schema-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(200px, 1fr));
+  gap: 10px;
+  padding: 16px;
+}
+
+.schema-card {
+  min-height: 150px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.schema-card strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.schema-card code {
+  display: block;
+  color: var(--muted);
+  line-height: 1.55;
+  white-space: normal;
 }
 
 .icon {
@@ -720,7 +873,10 @@ textarea:focus {
   }
 
   .two-column,
-  .report-grid {
+  .report-grid,
+  .dashboard-grid,
+  .management-grid,
+  .schema-list {
     grid-template-columns: 1fr;
   }
 
@@ -746,6 +902,11 @@ textarea:focus {
   }
 
   .sighting-form {
+    grid-template-columns: 1fr;
+  }
+
+  .scan-card,
+  .student-card-demo {
     grid-template-columns: 1fr;
   }
 }
